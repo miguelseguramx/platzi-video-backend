@@ -4,7 +4,7 @@ const moviesMock = [{
   "year": 1996,
   "cover": "http://dummyimage.com/213x107.png/dddddd/000000",
   "description": "Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.\n\nInteger tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.",
-  "duration": 8091,
+  "duration": 81,
   "contentRating": "NC-17",
   "source": "https://list-manage.com/rhoncus/aliquam.png?amet=donec&sapien=diam&dignissim=neque&vestibulum=vestibulum&vestibulum=eget&ante=vulputate&ipsum=ut&primis=ultrices&in=vel&faucibus=augue&orci=vestibulum&luctus=ante&et=ipsum&ultrices=primis&posuere=in&cubilia=faucibus&curae=orci&nulla=luctus&dapibus=et&dolor=ultrices&vel=posuere&est=cubilia&donec=curae&odio=donec&justo=pharetra&sollicitudin=magna&ut=vestibulum&suscipit=aliquet&a=ultrices&feugiat=erat&et=tortor&eros=sollicitudin&vestibulum=mi&ac=sit&est=amet&lacinia=lobortis&nisi=sapien&venenatis=sapien&tristique=non&fusce=mi&congue=integer&diam=ac&id=neque&ornare=duis&imperdiet=bibendum&sapien=morbi&urna=non&pretium=quam&nisl=nec&ut=dui&volutpat=luctus&sapien=rutrum&arcu=nulla&sed=tellus&augue=in&aliquam=sagittis&erat=dui&volutpat=vel&in=nisl&congue=duis&etiam=ac&justo=nibh&etiam=fusce&pretium=lacus&iaculis=purus&justo=aliquet&in=at&hac=feugiat",
   "tags": [
@@ -268,6 +268,24 @@ const moviesMock = [{
   ]
 }]
 
+
+// Aqui lo que vamos a hacer es testear nuestras rutas, esto jamas 
+// llegara a nuestros servicios, solo testearemos nuestras rutas
+function filteredMoviesMock(tag) {
+  return moviesMock.filter(movie => movie.tags.includes(tag))
+}
+
+class MoviesServiceMock{
+  async getMovies(){
+    return Promise.resolve(moviesMock)
+  }
+  async createMovies(){
+    return Promise.resolve(moviesMock[0])
+  }
+}
+
 module.exports = {
-  moviesMock
+  moviesMock,
+  filteredMoviesMock,
+  MoviesServiceMock
 }
