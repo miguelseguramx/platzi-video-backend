@@ -1,4 +1,5 @@
 const express = require('express')
+const passport = require('passport')
 // const { moviesMock } = require('../utils/mocks/movies')
 const MoviesService = require('../services/movies')
 
@@ -9,12 +10,16 @@ const {
 } = require ('../utils/schemas/movies')
 
 const validationHandler = require('../utils/middleware/validationHandler')
+const scopesValidationHandler = require('../utils/middleware/scopesValidationHandler')
 
 const cacheResponse = require('../utils/cacheResponse')
 const { 
   FIVE_MINUTES_IN_SECONDS, 
   SIXTY_MINUTES_IN_SECONDS 
 } = require('../utils/time')
+
+// JWT strategy
+require('../utils/auth/strategies/jwt')
 
 // La unica responsabilidad de las rutas es declararlas y extraer los parametros 
 // que le pases
@@ -24,27 +29,33 @@ function moviesApi(app) {
 
   const moviesService = new MoviesService()
 
-  router.get('/', async function(req, res, next){
-    // La siguiente linea agrega cache
-    cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
-    const { tags } = req.query
+  router.get('/', 
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['read:movies']),
+    async function(req, res, next){
+      // La siguiente linea agrega cache
+      cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
+      const { tags } = req.query
 
-    try {
-      const movies = await moviesService.getMovies({ tags })
-      // throw new Error('Error getting movies');
-      res.status(200).json({
-        data: movies,
-        message: 'movies listed'
-      })
-    } catch (error) {
-      next(error)
+      try {
+        const movies = await moviesService.getMovies({ tags })
+        // throw new Error('Error getting movies');
+        res.status(200).json({
+          data: movies,
+          message: 'movies listed'
+        })
+      } catch (error) {
+        next(error)
+      }
     }
-  })
+  )
 
   // Notese que el middlewere de la validacion de formato va a 
   // estar entre la ruta y la definicon de esta
   router.get(
     '/:movieId', 
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['read:movies']),
     validationHandler({ movieId: movieIdSchema }, 'params'), 
     async function(req, res, next){
       // La siguiente linea grega cache
@@ -64,6 +75,8 @@ function moviesApi(app) {
 
   router.post(
     '/',
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['create:movies']),
     validationHandler(createMovieSchema), 
     async function(req, res, next){
       const { body: movie } = req
@@ -81,6 +94,8 @@ function moviesApi(app) {
 
   router.put(
     '/:movieId', 
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['update:movies']),
     validationHandler({ movieId: movieIdSchema }, 'params'), 
     validationHandler(updateMovieSchema), 
     async function(req, res, next){
@@ -102,6 +117,8 @@ function moviesApi(app) {
 
   router.delete(
     '/:movieId',
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['delete:movies']),
     validationHandler({ movieId: movieIdSchema }, 'params'),
     async function(req, res, next){
       const { movieId } = req.params

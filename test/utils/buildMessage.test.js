@@ -11,7 +11,7 @@
 // También es recomendable hacerlo cuando tienes un bug para que tu solución de él perdure en el tiempo.
 
 const assert = require('assert')
-const buildMessage = require('../utils/buildMessage')
+const buildMessage = require('../../utils/buildMessage')
 
 describe.only('utils -buildMessage', function(){
   describe('when receives an entity and an action', function(){

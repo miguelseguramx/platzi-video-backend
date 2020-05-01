@@ -1,8 +1,8 @@
 const assert = require('assert') 
 const proxyquire = require('proxyquire')
 
-const { moviesMock, MoviesServiceMock } = require('../utils/mocks/movies')
-const testServer = require('../utils/testServer')
+const { moviesMock, MoviesServiceMock } = require('../../utils/mocks/movies')
+const testServer = require('../../utils/testServer')
 
 // Aqui abajo se van a testear todas las rutas y sus respuestas
 describe('routes - movies', function(){
